@@ -4,8 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactice Comments Section</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    
+    <main class="main-container">
+        <ul class="comments-list">
+
+        </ul>
+        <form action="">
+            <div class="form-container">
+                <picture>
+                    <source srcset="./assets/avatars/image-juliusomo.webp" type="image/webp">
+                    <source srcset="./assets/avatars/image-juliusomo.png" type="image/png">
+                    <img src="./assets/avatars/image-juliusomo.webp" class="add-comment-avatar" alt="user-avatar">
+                </picture>
+                <textarea id="add-comment" class="add-comment" placeholder="Add a comment..." cols="15" rows="5"></textarea>
+                <button class="submit-comment-btn">Send</button>
+            </div>
+        </form>
+    </main>
 </body>
 </html>
