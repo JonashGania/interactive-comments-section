@@ -1,4 +1,4 @@
-interface User {
+export interface User {
   image: { png: string; webp: string };
   username: string;
 }
@@ -11,10 +11,15 @@ interface UserData {
   user: User;
 }
 
-export interface Replies extends UserData {
+export interface Replies {
+  id: string;
+  content: string;
+  createdAt: string;
+  score: number;
+  user: User;
   replyingTo: string;
 }
 
-export interface Comments extends UserData {
+export interface IComments extends UserData {
   replies: Replies[];
 }
