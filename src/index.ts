@@ -1,10 +1,10 @@
 import "./style/style.css";
-import CommentCard from "./components/commentCards";
-import { data } from "./data";
+import { commentSubmission } from "./components/eventHandlers";
+import { Comments } from "./components/classes";
 
 const initializeLoad = (): void => {
-  const userComments = data.comments;
-  CommentCard(userComments);
+  Comments.initializeComments();
+  commentSubmission();
 };
 
 window.onload = initializeLoad;
