@@ -1,15 +1,24 @@
-import { Comments } from "../interface/dataInterface";
+import { IComments } from "../interface/dataInterface";
 import UserAvatar from "./userAvatar";
 import ReplyCard from "./replyCard";
+import currentUserAvatarPng from "../assets/avatars/image-juliusomo.png";
+import currentUserAvatarWebp from "../assets/avatars/image-juliusomo.webp";
+import {
+  handleReplyButton,
+  handleDeleteComment,
+  replySubmission,
+  handleUpdatingComment,
+} from "./eventHandlers";
+import { data } from "../data";
 
-const CommentCard = (comments: Comments[]) => {
+const DisplayComments = (comments: IComments[]) => {
   const commentsList = <HTMLUListElement>(
     document.querySelector(".comments-list")
   );
   commentsList.innerHTML = "";
 
   comments.forEach((comment) => {
-    const commentElement = <HTMLLIElement>document.createElement("li");
+    const commentElement = document.createElement("li");
     commentElement.classList.add("comment-card");
     commentElement.setAttribute("card-index", `${comment.id}`);
     commentElement.innerHTML = `
@@ -29,28 +38,75 @@ const CommentCard = (comments: Comments[]) => {
             </div>
             <div class="comment-content-container">
                 <div class="content-head">
-                    <div class="comment-head-wrapper">
-                        <div class="user-avatar-container"></div>
-                        <h3 class="comment-username">${comment.user.username}</h3>
-                        <span class="comment-date-created">${comment.createdAt}</span>
-                    </div>
-                    <button class="reply-button">
-                        <svg width="14" height="13" xmlns="http://www.w3.org/2000/svg" class="reply-icon">
-                            <path d="M.227 4.316 5.04.16a.657.657 0 0 1 1.085.497v2.189c4.392.05 7.875.93 7.875 5.093 0 1.68-1.082 3.344-2.279 4.214-.373.272-.905-.07-.767-.51 1.24-3.964-.588-5.017-4.829-5.078v2.404c0 .566-.664.86-1.085.496L.227 5.31a.657.657 0 0 1 0-.993Z" fill="#5357B6"/>
-                        </svg>
-                        <span class="reply-span">Reply</span>
-                    </button>
+                    ${
+                      comment.user.username === data.currentUser.username
+                        ? `
+                        <div class="comment-head-wrapper">
+                            <div class="user-avatar-container"></div>
+                            <h3 class="comment-username">${comment.user.username}</h3>
+                            <span class="you-span">you</span>
+                            <span class="comment-date-created">${comment.createdAt}</span>
+                        </div>
+                        <div class="edit-delete-container">
+                            <button class="delete-btn">
+                                <svg width="12" height="14" xmlns="http://www.w3.org/2000/svg" class="delete-icon">
+                                    <path d="M1.167 12.448c0 .854.7 1.552 1.555 1.552h6.222c.856 0 1.556-.698 1.556-1.552V3.5H1.167v8.948Zm10.5-11.281H8.75L7.773 0h-3.88l-.976 1.167H0v1.166h11.667V1.167Z" fill="#ED6368"/>
+                                </svg>
+                                <span class="delete-span">Delete</span>
+                            </button>
+                            <button class="edit-btn">
+                                <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg" class="edit-icon">
+                                    <path d="M13.479 2.872 11.08.474a1.75 1.75 0 0 0-2.327-.06L.879 8.287a1.75 1.75 0 0 0-.5 1.06l-.375 3.648a.875.875 0 0 0 .875.954h.078l3.65-.333c.399-.04.773-.216 1.058-.499l7.875-7.875a1.68 1.68 0 0 0-.061-2.371Zm-2.975 2.923L8.159 3.449 9.865 1.7l2.389 2.39-1.75 1.706Z" fill="#5357B6"/>
+                                </svg>
+                                <span class="edit-span">Edit</span>
+                            </button>
+                        </div>
+                    `
+                        : `
+                        <div class="comment-head-wrapper">
+                            <div class="user-avatar-container"></div>
+                            <h3 class="comment-username">${comment.user.username}</h3>
+                            <span class="comment-date-created">${comment.createdAt}</span>
+                        </div>
+                        <button class="reply-button">
+                            <svg width="14" height="13" xmlns="http://www.w3.org/2000/svg" class="reply-icon">
+                                <path d="M.227 4.316 5.04.16a.657.657 0 0 1 1.085.497v2.189c4.392.05 7.875.93 7.875 5.093 0 1.68-1.082 3.344-2.279 4.214-.373.272-.905-.07-.767-.51 1.24-3.964-.588-5.017-4.829-5.078v2.404c0 .566-.664.86-1.085.496L.227 5.31a.657.657 0 0 1 0-.993Z" fill="#5357B6"/>
+                            </svg>
+                            <span class="reply-span">Reply</span>
+                        </button>
+                    `
+                    } 
                 </div>
                 <div>
                     <p class="user-comment-content">${comment.content}</p>
+                    <div class="update-content-container close">
+                      <textarea id="update-comment-content" class="update-comment-content" cols="10" rows="5"></textarea>
+                      <button class="update-button">Update</button>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="user-reply-container">
             
         </div>
-    
+        <form action="" class="reply-form close">
+            <div class="user-reply-message">
+            <picture>
+                <source srcset=${currentUserAvatarWebp} type="image/webp">
+                <source srcset=${currentUserAvatarPng} type="image/png">
+                <img src=${currentUserAvatarWebp} class="currentUser-reply-avatar" alt="user-avatar">
+            </picture>
+            <textarea id="add-reply" class="add-reply" cols="10" rows="5">@${comment.user.username}</textarea>
+            <button class="submit-reply-btn">Reply</button>
+            </div>
+        </form>
     `;
+
+    const userAvatar = UserAvatar(
+      comment.user.image.png,
+      comment.user.image.webp,
+    );
+    const replyLists = ReplyCard(comment.replies, comment.id);
 
     const userAvatarContainer = <HTMLDivElement>(
       commentElement.querySelector(".user-avatar-container")
@@ -58,12 +114,75 @@ const CommentCard = (comments: Comments[]) => {
     const userReplyContainer = <HTMLDivElement>(
       commentElement.querySelector(".user-reply-container")
     );
-
-    const userAvatar = UserAvatar(
-      comment.user.image.png,
-      comment.user.image.webp,
+    const form = <HTMLFormElement>commentElement.querySelector(".reply-form");
+    const replyButton = <HTMLButtonElement>(
+      commentElement.querySelector(".reply-button")
     );
-    const replyLists = ReplyCard(comment.replies);
+    const addReply = <HTMLTextAreaElement>(
+      commentElement.querySelector(".add-reply")
+    );
+    const deleteBtn = <HTMLButtonElement>(
+      commentElement.querySelector(".delete-btn")
+    );
+    const overlay = <HTMLDivElement>document.querySelector(".overlay");
+    const modalContainer = <HTMLDivElement>(
+      document.querySelector(".modal-container")
+    );
+    const cancelBtn = <HTMLButtonElement>(
+      document.querySelector(".cancel-delete")
+    );
+    const yesDeleteBtn = <HTMLButtonElement>(
+      document.querySelector(".yes-delete")
+    );
+    const editBtn = <HTMLButtonElement>(
+      commentElement.querySelector(".edit-btn")
+    );
+    const updateBtn = <HTMLButtonElement>(
+      commentElement.querySelector(".update-button")
+    );
+    const updateContentContainer = <HTMLDivElement>(
+      commentElement.querySelector(".update-content-container")
+    );
+    const commentContent = <HTMLParagraphElement>(
+      commentElement.querySelector(".user-comment-content")
+    );
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      replySubmission(
+        addReply,
+        comment.id,
+        comment.replies.length,
+        comment.user.username,
+      );
+      form.classList.add("close");
+    });
+
+    if (cancelBtn && deleteBtn && yesDeleteBtn && overlay && modalContainer) {
+      handleDeleteComment(
+        cancelBtn,
+        deleteBtn,
+        yesDeleteBtn,
+        overlay,
+        modalContainer,
+        comment.id,
+      );
+    }
+
+    if (editBtn) {
+      handleUpdatingComment(
+        editBtn,
+        updateBtn,
+        updateContentContainer,
+        commentContent,
+        commentElement,
+        comment.id,
+      );
+    }
+
+    if (replyButton) {
+      handleReplyButton(replyButton, form, addReply, comment.user.username);
+    }
 
     userAvatarContainer.appendChild(userAvatar);
     userReplyContainer.appendChild(replyLists);
@@ -71,4 +190,4 @@ const CommentCard = (comments: Comments[]) => {
   });
 };
 
-export default CommentCard;
+export default DisplayComments;
