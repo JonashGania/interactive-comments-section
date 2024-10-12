@@ -1,5 +1,5 @@
 const UserAvatar = (pngAvatar: string, webAvatar: string) => {
-  const pictureElement = document.createElement("picture");
+  const pictureElement = document.createElement('picture');
   pictureElement.innerHTML = `
         <source srcset="${webAvatar}" type="image/webp">
         <source srcset="${pngAvatar}" type="image/png">
