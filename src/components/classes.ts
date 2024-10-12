@@ -1,20 +1,16 @@
-import { data } from "../data";
-import { IComments, Replies, User } from "../interface/dataInterface";
-import {
-  getDateCreated,
-  saveToLocalStorage,
-  loadFromLocalStorage,
-} from "../utils/utils";
-import juliusomoPng from "../assets/avatars/image-juliusomo.png";
-import juliusomoWebp from "../assets/avatars/image-juliusomo.webp";
-import DisplayComments from "./commentCards";
+import { data } from '../constant/data';
+import { IComments, Replies, User } from '../interface/dataInterface';
+import { saveToLocalStorage, loadFromLocalStorage } from '../utils/utils';
+import juliusomoPng from '../assets/avatars/image-juliusomo.png';
+import juliusomoWebp from '../assets/avatars/image-juliusomo.webp';
+import DisplayComments from './renderComments';
 
 const userProfile: User = {
   image: {
     png: juliusomoPng,
     webp: juliusomoWebp,
   },
-  username: "juliusomo",
+  username: 'juliusomo',
 };
 
 class Comments {
@@ -30,7 +26,7 @@ class Comments {
   constructor(content: string) {
     this.id = Comments.comments.length + 1;
     this.content = content;
-    this.createdAt = getDateCreated(new Date());
+    this.createdAt = new Date().toISOString();
     this.score = 0;
     this.user = userProfile;
     this.replies = [];
@@ -38,14 +34,12 @@ class Comments {
 
   static addComment(newComment: IComments) {
     Comments.comments.push(newComment);
-    saveToLocalStorage("comments", Comments.comments);
+    saveToLocalStorage('comments', Comments.comments);
   }
 
   static removeComment(commentId: number) {
-    Comments.comments = Comments.comments.filter(
-      (comment) => comment.id !== commentId,
-    );
-    saveToLocalStorage("comments", Comments.comments);
+    Comments.comments = Comments.comments.filter((comment) => comment.id !== commentId);
+    saveToLocalStorage('comments', Comments.comments);
   }
 
   static getComments(): IComments[] {
@@ -53,7 +47,7 @@ class Comments {
   }
 
   static initializeComments() {
-    const comments = loadFromLocalStorage("comments");
+    const comments = loadFromLocalStorage('comments');
     if (comments) {
       Comments.comments = comments;
     } else {
@@ -82,20 +76,18 @@ class Comments {
 
   addReply(newReply: Replies) {
     this.replies.push(newReply);
-    saveToLocalStorage("comments", Comments.comments);
+    saveToLocalStorage('comments', Comments.comments);
   }
 
   removeReply(id: string) {
     if (this.replies) {
       this.replies = this.replies.filter((reply) => reply.id !== id);
 
-      const commentIndex = Comments.comments.findIndex(
-        (comment) => comment.id === this.id,
-      );
+      const commentIndex = Comments.comments.findIndex((comment) => comment.id === this.id);
 
       if (commentIndex !== -1) {
         Comments.comments[commentIndex] = this;
-        saveToLocalStorage("comments", Comments.comments);
+        saveToLocalStorage('comments', Comments.comments);
       }
     }
   }
@@ -112,7 +104,7 @@ class Reply {
   constructor(id: string, content: string, replyingTo: string) {
     this.id = id;
     this.content = content;
-    this.createdAt = getDateCreated(new Date());
+    this.createdAt = new Date().toISOString();
     this.score = 0;
     this.user = userProfile;
     this.replyingTo = replyingTo;
