@@ -4,7 +4,7 @@ import { getDateCreated } from '../utils/utils';
 import currentUserAvatarPng from '../assets/avatars/image-juliusomo.png';
 import currentUserAvatarWebp from '../assets/avatars/image-juliusomo.webp';
 import UserAvatar from './userAvatar';
-import ReplyCard from './replyCard';
+import DisplayReplies from './renderReply';
 import {
   handleReplyButton,
   handleDeleteComment,
@@ -133,17 +133,13 @@ const commentCard = (comments: IComments) => {
     `;
 
   const userAvatar = UserAvatar(user.image.png, user.image.webp);
-  const replyLists = ReplyCard(replies, id, replies.length);
+  const replyLists = DisplayReplies(replies, id, replies.length);
 
   const userAvatarContainer = <HTMLDivElement>commentElement.querySelector('.user-avatar-container');
   const userReplyContainer = <HTMLDivElement>commentElement.querySelector('.user-reply-container');
   const form = <HTMLFormElement>commentElement.querySelector('.reply-form');
   const addReply = <HTMLTextAreaElement>commentElement.querySelector('.add-reply');
   const deleteBtn = commentElement.querySelectorAll('.delete-btn') as NodeListOf<HTMLButtonElement>;
-  const overlay = <HTMLDivElement>document.querySelector('.overlay');
-  const modalContainer = <HTMLDivElement>document.querySelector('.modal-container');
-  const cancelBtn = <HTMLButtonElement>document.querySelector('.cancel-delete');
-  const yesDeleteBtn = <HTMLButtonElement>document.querySelector('.yes-delete');
   const editBtn = commentElement.querySelectorAll('.edit-btn') as NodeListOf<HTMLButtonElement>;
   const updateBtn = <HTMLButtonElement>commentElement.querySelector('.update-button');
   const upvoteBtn = <HTMLButtonElement>commentElement.querySelector('.upvote-btn');
@@ -159,9 +155,9 @@ const commentCard = (comments: IComments) => {
     form.classList.add('close');
   });
 
-  if (cancelBtn && deleteBtn && yesDeleteBtn && overlay && modalContainer) {
+  if (deleteBtn) {
     deleteBtn.forEach((deleteButton) => {
-      handleDeleteComment(cancelBtn, deleteButton, yesDeleteBtn, overlay, modalContainer, id);
+      handleDeleteComment(deleteButton, id);
     });
   }
 
