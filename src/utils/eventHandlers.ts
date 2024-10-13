@@ -54,15 +54,12 @@ const replySubmission = (
   }
 };
 
-const handleDeleteComment = (
-  cancelBtn: HTMLButtonElement,
-  deleteBtn: HTMLButtonElement,
-  yesDeleteBtn: HTMLButtonElement,
-  overlay: HTMLDivElement,
-  modalContainer: HTMLDivElement,
-  commentId: number,
-) => {
+const handleDeleteComment = (deleteBtn: HTMLButtonElement, commentId: number) => {
   let commentIdToDelete: number | null = null;
+  const overlay = <HTMLDivElement>document.querySelector('.overlay');
+  const modalContainer = <HTMLDivElement>document.querySelector('.modal-container');
+  const cancelBtn = <HTMLButtonElement>document.querySelector('.cancel-delete');
+  const yesDeleteBtn = <HTMLButtonElement>document.querySelector('.yes-delete');
 
   cancelBtn.addEventListener('click', () => {
     overlay.classList.remove('open');
@@ -90,16 +87,20 @@ const handleDeleteComment = (
   }
 };
 
-const handleDeleteReply = (
-  cancelBtn: HTMLButtonElement,
-  deleteBtn: HTMLButtonElement,
-  yesDeleteBtn: HTMLButtonElement,
-  overlay: HTMLDivElement,
-  modalContainer: HTMLDivElement,
-  commentId: number,
-  replyId: string,
-) => {
+const handleDeleteReply = (deleteBtn: HTMLButtonElement, commentId: number, replyId: string) => {
   let replyIdToDelete: string | null = null;
+  const overlay = <HTMLDivElement>document.querySelector('.overlay');
+  const modalContainer = <HTMLDivElement>document.querySelector('.modal-container');
+  const cancelBtn = <HTMLButtonElement>document.querySelector('.cancel-delete');
+  const yesDeleteBtn = <HTMLButtonElement>document.querySelector('.yes-delete');
+
+  if (deleteBtn) {
+    deleteBtn.addEventListener('click', () => {
+      replyIdToDelete = replyId;
+      overlay.classList.add('open');
+      modalContainer.classList.add('open');
+    });
+  }
 
   cancelBtn.addEventListener('click', () => {
     overlay.classList.remove('open');
@@ -123,14 +124,6 @@ const handleDeleteReply = (
       console.log(Comments.getComments());
     }
   });
-
-  if (deleteBtn) {
-    deleteBtn.addEventListener('click', () => {
-      replyIdToDelete = replyId;
-      overlay.classList.add('open');
-      modalContainer.classList.add('open');
-    });
-  }
 };
 
 const handleUpdatingComment = (
